@@ -1,0 +1,14 @@
+{
+  "name": "mimi-node-jsproject",
+  "version": "0.0.0",
+  "description": "mimiNodeJSProject",
+  "main": "server.js",
+  "author": {
+    "name": ""
+  },
+  "devDependencies": {
+    "eslint": "^8.21.0"
+  },
+  "eslintConfig": {
+  }
+}

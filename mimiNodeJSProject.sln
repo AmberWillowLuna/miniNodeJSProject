@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35327.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "mimiNodeJSProject", "mimiNodeJSProject\mimiNodeJSProject.njsproj", "{46595E58-1DC1-496F-8FDB-6D6D9CFD7528}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{46595E58-1DC1-496F-8FDB-6D6D9CFD7528}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46595E58-1DC1-496F-8FDB-6D6D9CFD7528}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46595E58-1DC1-496F-8FDB-6D6D9CFD7528}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46595E58-1DC1-496F-8FDB-6D6D9CFD7528}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7236A9C9-059B-43CD-A423-E770A24B65FD}
+	EndGlobalSection
+EndGlobal
