@@ -29,6 +29,7 @@ const countdowns = {};   // lobby number -> seconds left
 
 // --- Drawing ---
 function generateGrid() {
+    console.log(map)
   const rows = map.length;
   const cols = map[0].length; // dungeon rooms are 10x10, the lobby is 25x25
   gridContainer.style.gridTemplateColumns = `repeat(${cols}, 20px)`;
@@ -56,7 +57,7 @@ function renderPlayers() {
     if (!cell) return;
     const dot = document.createElement('div');
     dot.className = 'player';
-    dot.textContent = player.name[0];
+    dot.textContent = player.nickname[0];
     dot.style.backgroundColor = `rgb(${player.color.join(',')})`;
     cell.appendChild(dot);
   });
@@ -77,15 +78,14 @@ joinBtn.addEventListener('click', () => {
     parseInt(hex.substring(5, 7), 16),
   ];
 
+  localPlayer = new Player(nickname, color, [12, 12]);
 
-  localPlayer = new window.Player(nickname, color, [0, 0]);
-    console.log(localPlayer)
-    socket.emit('newPlayer', { player: localPlayer }); // send the server our name, color, and class
+    socket.emit('newPlayer', { player: localPlayer.serialize() }); // send the server our name, color, and class
 
   // Hide the form, show the game
   if (playerForm==null) return; // Guard against missing DOM element
   playerForm.classList.add('hidden');
-  [gridContainer, chatBox, statusBox, inventoryBox].forEach(el => el.classList.remove('hidden'));
+  [gridContainer, chatBox].forEach(el => el.classList.remove('hidden'));
 });
 
 // --- Movement (WASD) ---
@@ -132,15 +132,11 @@ messageInput.addEventListener('keydown', (e) => {
 
 // --- Server events ---
 // The map we should show changed (joined, lobby opened/closed, new dungeon room, chest taken)
-socket.on('mapUpdate', ({ map: newMap, title, place }) => {
+socket.on('mapUpdate', ({ map: newMap }) => {
   map = newMap;
-  placeText.textContent = title;
-  if (place === 'dungeon') {
-    for (const lobby in countdowns) delete countdowns[lobby]; // lobby timers are only for the lobby
-    renderCountdowns();
-  }
   generateGrid();
-  renderPlayers();
+    renderPlayers(); 
+    console.log("generated")
 });
 
 socket.on('updatePlayers', (serverPlayers) => {

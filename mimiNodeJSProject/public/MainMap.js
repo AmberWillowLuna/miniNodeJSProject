@@ -1,5 +1,5 @@
 
-class MainMap{
+export default class MainMap{
     _width;
     _height;
     _map;
@@ -7,7 +7,6 @@ class MainMap{
     //up cannot be with down and left cannot be with right - so we will have to make a check for that
     //it will be with startEvent() function where the event will be chosen
     constructor() {
-        super()
         this._width = 25;
         this._height = 25;
         this._map = [
@@ -41,10 +40,15 @@ class MainMap{
 
     }
 
+    getMap() {
+        return this._map
+    }
+
+
+
     //methods to start and to go;
 
 
 
 }
 
-window.MainMap = MainMap;

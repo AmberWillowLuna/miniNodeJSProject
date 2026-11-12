@@ -29,10 +29,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="public\client.js" />
-    <Content Include="MainMap.js" />
+    <Content Include="public\MainMap.js" />
     <Content Include="public\index.html" />
     <Content Include="public\Player.js" />
     <Content Include="public\style.css" />
+    <Content Include="scoreboard.json" />
     <Content Include="server.js" />
     <Content Include="package.json" />
     <Content Include="README.md" />

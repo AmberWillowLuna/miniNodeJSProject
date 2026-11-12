@@ -1,6 +1,4 @@
-
-
-class Player {
+export default class Player {
     _score;
     _nickname;
     _color;
@@ -49,9 +47,6 @@ class Player {
     }
 
     getPos() {
-                return this._pos;
+        return this._pos;
     }
-
 }
-
-window.Player = Player
