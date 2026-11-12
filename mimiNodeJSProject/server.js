@@ -21,8 +21,11 @@ const scoreboard = {};
 //const AllTimeScoreboard = JSON.parse(fs.readFileSync(path.join(__dirname, 'scoreboard.json'), 'utf8'));
 
 
-function broadcastPlayers(place) {
-    //io.to(place).emit('updatePlayers', here);
+function broadcastPlayers() {
+    io.emit('updatePlayers', players);
+    io.emit('mapUpdate', {
+        map: mainMap.getMap()
+    });
 }
 
 
@@ -33,14 +36,13 @@ io.on('connection', (socket) => {
     socket.on('chatMessage', ({ message } = {}) => {
         const p = players[socket.id];
         if (!p) return;
-        io.emit('chatMessage', { name: p.name, message: String(message).slice(0, 200) });
+        io.emit('chatMessage', { name: p.nickname, message: String(message).slice(0, 200) });
     });
     // Player picked name + color
     socket.on('newPlayer', ({ player } = {}) => {
 
         if (players[socket.id]) return; // already joined
 
-        console.log("Received nickname:", player.nickname);
         const cleanName = String(player.nickname || '').trim().slice(0, 16);
 
         const validColor = Array.isArray(player.color) &&
@@ -55,20 +57,48 @@ io.on('connection', (socket) => {
 
 
         players[socket.id] = {
-            name: cleanName,
+            nickname: cleanName,
             color: validColor ? player.color : [255, 0, 0],
             pos: player.pos
         };
 
         socket.join('main');
-        console.log(mainMap.getMap());
+
         
 
         socket.emit('mapUpdate', {
             map: mainMap.getMap()
             }); // always the CURRENT map
 
+        socket.emit('updatePlayers', {
+            serverPlayers: players
+        });
+
         //broadcastPlayers('main');
+    });
+
+
+    socket.on('move', ({ x, y } = {}) => {
+        const p = players[socket.id];
+        if (!p) return; // hasn't joined yet
+       
+        const map = mainMap.getMap();
+
+        const inside = Number.isInteger(x) && Number.isInteger(y) &&
+            y >= 0 && y < map.length && x >= 0 && x < map[0].length;
+
+        if (!inside) return;
+
+        if (Math.abs(x - p.pos[0]) + Math.abs(y - p.pos[1]) > 1) return; // max 1 tile
+  //      if (SOLID.includes(map[y][x])) return;                           // walls block you
+        p.pos = [x, y];
+
+        players[socket.id].pos =p.pos;
+ 
+        broadcastPlayers('main');
+        socket.emit('updatePlayers', {
+            serverPlayers: players
+        });
     });
 });
 

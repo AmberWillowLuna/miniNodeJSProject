@@ -8,7 +8,7 @@ const TILE_COLORS = {
 };
 
 // optional symbol drawn on the tile
-const TILE_LABELS = { 1: '→', 2: '↑', 6: 'c', 7: 'c', 8: 'c', 15: 'r', 16: 's' };
+const TILE_LABELS = { 1: 'x', 2: '↑', 6: 'c', 7: 'c', 8: 'c', 15: 'r', 16: 's' };
 
 // --- HTML elements ---
 const gridContainer = document.getElementById('grid');
@@ -29,7 +29,6 @@ const countdowns = {};   // lobby number -> seconds left
 
 // --- Drawing ---
 function generateGrid() {
-    console.log(map)
   const rows = map.length;
   const cols = map[0].length; // dungeon rooms are 10x10, the lobby is 25x25
   gridContainer.style.gridTemplateColumns = `repeat(${cols}, 20px)`;
@@ -48,18 +47,22 @@ function generateGrid() {
 }
 
 function renderPlayers() {
-  if (!map) return;
+    if (!map) return;
+    if (!players || typeof players !== 'object') return;
   document.querySelectorAll('.player').forEach(el => el.remove());
   const cols = map[0].length;
   Object.values(players).forEach((player) => {
-    const [x, y] = player.pos;
-    const cell = gridContainer.children[y * cols + x];
-    if (!cell) return;
-    const dot = document.createElement('div');
-    dot.className = 'player';
-    dot.textContent = player.nickname[0];
-    dot.style.backgroundColor = `rgb(${player.color.join(',')})`;
-    cell.appendChild(dot);
+      if (player.pos) {
+          const [x, y] = player.pos;
+          const cell = gridContainer.children[y * cols + x];
+          if (!cell) return;
+          const dot = document.createElement('div');
+          dot.className = 'player';
+          console.log(player)
+          dot.textContent = player.nickname[0];
+          dot.style.backgroundColor = `rgb(${player.color.join(',')})`;
+          cell.appendChild(dot);
+      }
   });
 }
 
@@ -90,14 +93,16 @@ joinBtn.addEventListener('click', () => {
 
 // --- Movement (WASD) ---
 document.addEventListener('keydown', (e) => {
+
   if (!localPlayer || !map) return;
 
   // If the user is typing in the chat (or any input), don't move
-  const tag = e.target.tagName;
-  if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+    const tag = e.target.tagName;
 
+  if (tag === 'INPUT' || tag === 'TEXTAREA') return;
   // Our position comes from the SERVER's copy, so we can never get out of sync
-  const me = players[socket.id];
+    const me = players[socket.id];
+
   if (!me) return;
   let [x, y] = me.pos;
 
@@ -136,12 +141,14 @@ socket.on('mapUpdate', ({ map: newMap }) => {
   map = newMap;
   generateGrid();
     renderPlayers(); 
-    console.log("generated")
+
 });
 
 socket.on('updatePlayers', (serverPlayers) => {
-  players = serverPlayers;
-  renderPlayers();
+    players = serverPlayers.serverPlayers;
+    console.log(players);
+    generateGrid();
+    renderPlayers();
 });
 
 
